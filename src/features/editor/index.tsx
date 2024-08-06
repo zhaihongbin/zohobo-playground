@@ -1,45 +1,55 @@
-import { useCallback } from "react";
-import { transform } from "@babel/standalone";
+import { FC, memo, useCallback, useContext } from "react";
 import ReactEditor from "@monaco-editor/react";
+import type { OnMount, EditorProps } from "@monaco-editor/react";
+import { createATA } from "./utils";
+import EditorContext from "#src/context/editor.js";
 
-const code = `import { useEffect, useState } from "react";
+const defaultOptions: EditorProps["options"] = {
+  fontSize: 14,
+  scrollBeyondLastLine: false,
+  minimap: {
+    enabled: false,
+  },
+  scrollbar: {
+    verticalScrollbarSize: 6,
+    horizontalScrollbarSize: 6,
+  },
+};
 
-function App() {
-  const [num, setNum] = useState(() => {
-    const num1 = 1 + 2;
-    const num2 = 2 + 3;
-    return num1 + num2
-  });
+const Editor: FC = () => {
+  const { value, onChange } = useContext(EditorContext);
 
-  return (
-    <div onClick={() => setNum((prevNum) => prevNum + 1)}>{num}</div>
-  );
-}
-
-export default App;
-`;
-
-function Editor() {
-  const transformCode = useCallback((value?: string) => {
-    if (!value) {
-      return;
-    }
-
-    const res = transform(value, {
-      presets: ["react", "typescript"],
-      filename: "demo.tsx",
+  const handleMount: OnMount = useCallback((editor, monaco) => {
+    monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
+      jsx: monaco.languages.typescript.JsxEmit.Preserve,
+      esModuleInterop: true,
     });
 
-    console.log(res.code);
+    const ata = createATA((code, path) => {
+      monaco.languages.typescript.typescriptDefaults.addExtraLib(
+        code,
+        `file://${path}`
+      );
+    });
+
+    editor.onDidChangeModelContent(() => {
+      console.log("onDidChangeModelContent");
+      ata(editor.getValue());
+    });
+
+    ata(editor.getValue());
   }, []);
 
   return (
     <ReactEditor
-      defaultLanguage="javascript"
-      defaultValue={code}
-      onChange={transformCode}
+      language="typescript"
+      path="demo.tsx"
+      value={value}
+      onChange={onChange}
+      onMount={handleMount}
+      options={defaultOptions}
     />
   );
-}
+};
 
-export default Editor;
+export default memo(Editor);

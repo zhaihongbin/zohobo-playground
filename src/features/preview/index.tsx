@@ -1,4 +1,4 @@
-import type { FC } from "react";
+import { FC, memo } from "react";
 
 // 路径后面加个 ?raw 是通过字符串引入（webpack 和 vite 都有这种功能）
 import iframeRaw from "./iframe.html?raw";
@@ -21,4 +21,4 @@ const Preview: FC = () => {
   );
 };
 
-export default Preview;
+export default memo(Preview);

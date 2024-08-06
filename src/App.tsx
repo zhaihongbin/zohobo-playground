@@ -1,5 +1,7 @@
-import { useCallback, useRef } from "react";
+import { useCallback } from "react";
 import { transform } from "@babel/standalone";
+import Editor from "@monaco-editor/react";
+import Preview from "./features/preview";
 
 const code = `import { useEffect, useState } from "react";
 
@@ -19,14 +21,12 @@ export default App;
 `;
 
 function App() {
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
-
-  const onClick = useCallback(() => {
-    if (!textareaRef.current) {
+  const transformCode = useCallback((value?: string) => {
+    if (!value) {
       return;
     }
 
-    const res = transform(textareaRef.current.value, {
+    const res = transform(value, {
       presets: ["react", "typescript"],
       filename: "demo.tsx",
     });
@@ -35,13 +35,18 @@ function App() {
   }, []);
 
   return (
-    <div>
-      <textarea
-        ref={textareaRef}
-        style={{ width: "500px", height: "300px" }}
+    <div
+      style={{
+        height: "100%",
+      }}
+    >
+      <Editor
+        height="50%"
+        defaultLanguage="javascript"
         defaultValue={code}
-      ></textarea>
-      <button onClick={onClick}>编译</button>
+        onChange={transformCode}
+      />
+      <Preview />
     </div>
   );
 }

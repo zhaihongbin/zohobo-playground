@@ -1,12 +1,13 @@
-import { FC } from "react";
 import { Allotment } from "allotment";
+import { FC } from "react";
+import Editor from "../../features/editor";
+import Preview from "../../features/preview";
 import "allotment/dist/style.css";
-import Editor from "../editor";
-import Preview from "../preview";
+import styles from "./index.module.scss";
 
-const Playground: FC = () => {
+const Main: FC = () => {
   return (
-    <div style={{ height: "100vh" }}>
+    <main className={styles.content}>
       <Allotment defaultSizes={[100, 100]}>
         <Allotment.Pane minSize={500}>
           <Editor />
@@ -15,8 +16,8 @@ const Playground: FC = () => {
           <Preview />
         </Allotment.Pane>
       </Allotment>
-    </div>
+    </main>
   );
 };
 
-export default Playground;
+export default Main;

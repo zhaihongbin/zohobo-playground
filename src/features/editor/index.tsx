@@ -41,18 +41,18 @@ const Editor: FC = () => {
     ata(editor.getValue());
   }, []);
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const onChange: OnChange = useCallback(
-    debounce((value?: string) => {
+    (value?: string) => {
       if (!activeFile) {
         return;
       }
+
       setFile({
         ...activeFile,
         value,
       });
-    }, 1000),
-    []
+    },
+    [activeFile, setFile]
   );
 
   return (
@@ -60,7 +60,7 @@ const Editor: FC = () => {
       language={activeFile?.language}
       path={activeFile?.name}
       value={activeFile?.value}
-      onChange={onChange}
+      onChange={debounce(onChange, 1000)}
       onMount={handleMount}
       options={defaultOptions}
     />

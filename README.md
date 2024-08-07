@@ -1,30 +1,17 @@
-# React + TypeScript + Vite
+# React Playground
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## 项目依赖
++ "@ant-design/icons": "^5.4.0"
++ "@babel/standalone": "^7.25.3"
++ "@monaco-editor/react": "^4.6.0"
++ "@typescript/ata": "^0.9.7"
++ "allotment": "^1.20.2"
++ "clsx": "^2.1.1"
++ "lodash-es": "^4.17.21"
++ "react": "^18.3.1"
++ "react-dom": "^18.3.1"
 
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json', './tsconfig.app.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
-
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+## 实现思路
+1. 基于`@monaco-editor/react`实现react编辑器
+2. 基于`@typescript/ata`动态解析并下载项目依赖类型库，使用`monaco.languages.typescript.typescriptDefaults.addExtraLib`添加类型库
+3. 基于`@babel/standalone`编译react代码，使用`blob:`地址替换js模块地址

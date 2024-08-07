@@ -8,14 +8,12 @@ export type FileMap = Record<string, File>;
 export type PlaygroundContextValue = {
   fileMap: FileMap;
   activeFile?: File;
-  setFile: (file: File) => void;
-  deleteFile: (fileName: string) => void;
-  clearFileMap: () => void;
+  addFile: (file: File) => void;
+  removeFile: (fileName: string) => void;
+  resetFileMap: () => void;
   activeFileName?: string;
   setActiveFileName: (value?: string) => void;
 };
-
-const defaultFileMap = {};
 
 const PlaygroundContext = createContext<PlaygroundContextValue | null>(null);
 
@@ -37,7 +35,7 @@ export const PlaygroundProvider: FC<PropsWithChildren> = (props) => {
   const playgroundContextValue: PlaygroundContextValue = {
     fileMap: fileMap,
     activeFile,
-    setFile: (file: Omit<File, "language">) => {
+    addFile: (file: Omit<File, "language">) => {
       setFileMap((pre) => {
         return {
           ...pre,
@@ -48,15 +46,15 @@ export const PlaygroundProvider: FC<PropsWithChildren> = (props) => {
         };
       });
     },
-    deleteFile: (name) => {
+    removeFile: (name) => {
       setFileMap((pre) => {
         const obj = { ...pre };
         delete obj[name];
         return obj;
       });
     },
-    clearFileMap: () => {
-      setFileMap(defaultFileMap);
+    resetFileMap: () => {
+      setFileMap(initFiles);
     },
     activeFileName,
     setActiveFileName,

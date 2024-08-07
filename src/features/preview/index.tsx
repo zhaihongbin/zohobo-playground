@@ -28,6 +28,7 @@ const Preview: FC = () => {
 
   return (
     <iframe
+      id="preview"
       src={iframeUrl}
       style={{
         width: "100%",

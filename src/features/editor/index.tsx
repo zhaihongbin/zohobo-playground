@@ -4,6 +4,7 @@ import type { OnMount, EditorProps, OnChange } from "@monaco-editor/react";
 import { createATA } from "./utils";
 import PlaygroundContext from "@/context/playground";
 import { debounce } from "lodash-es";
+import { DEBOUNCE_WAIT_TIME } from "@/utils";
 
 const defaultOptions: EditorProps["options"] = {
   fontSize: 14,
@@ -18,7 +19,7 @@ const defaultOptions: EditorProps["options"] = {
 };
 
 const Editor: FC = () => {
-  const { activeFile, setFile } = useContext(PlaygroundContext)!;
+  const { activeFile, addFile } = useContext(PlaygroundContext)!;
 
   const handleMount: OnMount = useCallback((editor, monaco) => {
     monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
@@ -47,12 +48,12 @@ const Editor: FC = () => {
         return;
       }
 
-      setFile({
+      addFile({
         ...activeFile,
         value,
       });
     },
-    [activeFile, setFile]
+    [activeFile, addFile]
   );
 
   return (
@@ -60,7 +61,7 @@ const Editor: FC = () => {
       language={activeFile?.language}
       path={activeFile?.name}
       value={activeFile?.value}
-      onChange={debounce(onChange, 1000)}
+      onChange={debounce(onChange, DEBOUNCE_WAIT_TIME)}
       onMount={handleMount}
       options={defaultOptions}
     />

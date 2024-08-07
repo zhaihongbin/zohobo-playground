@@ -2,7 +2,7 @@ import { FC, memo, useCallback, useContext } from "react";
 import ReactEditor from "@monaco-editor/react";
 import type { OnMount, EditorProps } from "@monaco-editor/react";
 import { createATA } from "./utils";
-import EditorContext from "#src/context/editor.js";
+import EditorContext from "../../context/editor";
 
 const defaultOptions: EditorProps["options"] = {
   fontSize: 14,

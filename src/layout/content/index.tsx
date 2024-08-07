@@ -4,7 +4,7 @@ import Editor from "../../features/editor";
 import Preview from "../../features/preview";
 import "allotment/dist/style.css";
 import styles from "./index.module.scss";
-import EditorContext, { defaultCode } from "#src/context/editor.js";
+import EditorContext, { defaultCode } from "../../context/editor";
 
 const Main: FC = () => {
   const [editorValue, setEditorValue] = useState<string | undefined>(

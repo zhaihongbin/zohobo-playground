@@ -1,9 +1,8 @@
-import { OnChange } from "@monaco-editor/react";
 import { createContext } from "react";
 
 type EditorContextValue = {
   value?: string;
-  onChange?: OnChange;
+  onChange?: (value?: string) => void;
 };
 
 export const defaultCode = `

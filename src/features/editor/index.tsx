@@ -1,8 +1,9 @@
 import { FC, memo, useCallback, useContext } from "react";
 import ReactEditor from "@monaco-editor/react";
-import type { OnMount, EditorProps } from "@monaco-editor/react";
+import type { OnMount, EditorProps, OnChange } from "@monaco-editor/react";
 import { createATA } from "./utils";
-import EditorContext from "../../context/editor";
+import PlaygroundContext from "@/context/playground";
+import { debounce } from "lodash-es";
 
 const defaultOptions: EditorProps["options"] = {
   fontSize: 14,
@@ -17,7 +18,7 @@ const defaultOptions: EditorProps["options"] = {
 };
 
 const Editor: FC = () => {
-  const { value, onChange } = useContext(EditorContext);
+  const { activeFile, setFile } = useContext(PlaygroundContext)!;
 
   const handleMount: OnMount = useCallback((editor, monaco) => {
     monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
@@ -40,11 +41,25 @@ const Editor: FC = () => {
     ata(editor.getValue());
   }, []);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const onChange: OnChange = useCallback(
+    debounce((value?: string) => {
+      if (!activeFile) {
+        return;
+      }
+      setFile({
+        ...activeFile,
+        value,
+      });
+    }, 1000),
+    []
+  );
+
   return (
     <ReactEditor
-      language="typescript"
-      path="demo.tsx"
-      value={value}
+      language={activeFile?.language}
+      path={activeFile?.name}
+      value={activeFile?.value}
       onChange={onChange}
       onMount={handleMount}
       options={defaultOptions}

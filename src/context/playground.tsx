@@ -1,31 +1,42 @@
-import { createContext, FC, PropsWithChildren, useState } from "react";
-import { fileName2Language } from "../utils";
+import { createContext, FC, PropsWithChildren, useMemo, useState } from "react";
+import { fileName2Language, ENTRY_FILE_NAME, initFiles } from "../utils";
 
-export type File = { name: string; value: string; language: string };
+export type File = { name: string; value?: string; language: string };
 
-type PlaygroundContextValue = {
-  fileMap?: Record<string, File>;
-  setFile?: (file: File) => void;
-  deleteFile?: (fileName: string) => void;
-  clearFileMap?: () => void;
+export type FileMap = Record<string, File>;
+
+export type PlaygroundContextValue = {
+  fileMap: FileMap;
+  activeFile?: File;
+  setFile: (file: File) => void;
+  deleteFile: (fileName: string) => void;
+  clearFileMap: () => void;
   activeFileName?: string;
-  setActiveFileName?: (value?: string) => void;
+  setActiveFileName: (value?: string) => void;
 };
 
-const defaultPlaygroundContextValue: PlaygroundContextValue = {};
 const defaultFileMap = {};
 
-const PlaygroundContext = createContext(defaultPlaygroundContextValue);
+const PlaygroundContext = createContext<PlaygroundContextValue | null>(null);
 
 export default PlaygroundContext;
 
+const defaultFileName = ENTRY_FILE_NAME;
 export const PlaygroundProvider: FC<PropsWithChildren> = (props) => {
-  const [fileMap, setFileMap] =
-    useState<PlaygroundContextValue["fileMap"]>(defaultFileMap);
-  const [activeFileName, setActiveFileName] = useState<string>();
+  const [fileMap, setFileMap] = useState<FileMap>(initFiles);
+
+  const [activeFileName, setActiveFileName] = useState<string | undefined>(
+    defaultFileName
+  );
+
+  const activeFile = useMemo(
+    () => (activeFileName ? fileMap[activeFileName] : undefined),
+    [activeFileName, fileMap]
+  );
 
   const playgroundContextValue: PlaygroundContextValue = {
     fileMap: fileMap,
+    activeFile,
     setFile: (file: Omit<File, "language">) => {
       setFileMap((pre) => {
         return {
